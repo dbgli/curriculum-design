@@ -11,7 +11,15 @@ using namespace std;
 using namespace cv;
 
 bool getScreenshot() {
-    system("D:/课件/单片机/curriculum-design/getScreenshot.bat");
+    string pcSaveFile = "D:/课件/单片机/curriculum-design/image/screenshot.png";
+    string mobileSaveFile = "/storage/emulated/0/Pictures/Screenshots/screenshot.png";
+    char command[200];
+    sprintf_s(command, 200, "adb shell screencap -p %s", mobileSaveFile.c_str());
+    system(command);
+    sprintf_s(command, 200, "adb pull %s %s", mobileSaveFile.c_str(), pcSaveFile.c_str());
+    system(command);
+    sprintf_s(command, 200, "adb shell rm %s", mobileSaveFile.c_str());
+    system(command);
     return 0;
 }
 
