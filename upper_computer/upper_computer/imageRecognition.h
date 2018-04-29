@@ -65,16 +65,20 @@ double getDistance(Point bottleBottomLoc, Point platformLoc) {
 }
 
 bool draw(Mat &srcImage, Rect bottleScope, Point bottleLoc, Point platformLoc) {
-    rectangle(srcImage, bottleScope, Scalar(0, 255, 255), 6, 8, 0);
-    line(srcImage, bottleLoc, platformLoc, Scalar(255, 0, 0), 10, 8);
-    circle(srcImage, bottleLoc, 10, Scalar(0, 0, 255), -1, 8);
-    circle(srcImage, platformLoc, 10, Scalar(0, 0, 255), -1, 8);
+    //绘制
+    rectangle(srcImage, bottleScope, Scalar(0, 255, 255), 8, CV_AA);
+    line(srcImage, bottleLoc, platformLoc, Scalar(255, 0, 0), 10, CV_AA);
+    circle(srcImage, bottleLoc, 10, Scalar(0, 0, 255), -1, CV_AA);
+    circle(srcImage, platformLoc, 10, Scalar(0, 0, 255), -1, CV_AA);
+    //显示
     namedWindow("结果", WINDOW_NORMAL);
     resizeWindow("结果", 360, 640);
     imshow("结果", srcImage);
     waitKey(30);
+    //保存
     static unsigned int n = 0;
-    string srcImageSaveFile = "D:/课件/单片机/curriculum-design/image/screenshot_" + to_string(++n) + ".jpg";
+    char srcImageSaveFile[100];
+    sprintf_s(srcImageSaveFile, 100, "D:/课件/单片机/curriculum-design/image/screenshot_%d.jpg", ++n);
     imwrite(srcImageSaveFile, srcImage);
     return 0;
 }
