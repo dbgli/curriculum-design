@@ -72,6 +72,7 @@ bool draw(Mat &srcImage, Rect bottleScope, Point bottleLoc, Point platformLoc) {
     namedWindow("结果", WINDOW_NORMAL);
     resizeWindow("结果", 360, 640);
     imshow("结果", srcImage);
+    waitKey(30);
     static unsigned int n = 0;
     string srcImageSaveFile = "D:/课件/单片机/curriculum-design/image/screenshot_" + to_string(++n) + ".jpg";
     imwrite(srcImageSaveFile, srcImage);
