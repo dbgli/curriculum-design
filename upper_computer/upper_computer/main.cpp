@@ -15,14 +15,14 @@ int main() {
         Mat srcImage = imread("D:/课件/单片机/curriculum-design/image/screenshot.png");
         Mat tmplImage = imread("D:/课件/单片机/curriculum-design/bottle.png");
         //查找瓶子
-        Point matchLoc;
-        Point bottleBottomLoc = getBottleBottomLoc(srcImage, tmplImage, matchLoc);
+        Rect bottleScope;
+        Point bottleLoc = getBottleLoc(srcImage, tmplImage, bottleScope);
         //查找平台
-        Point platformLoc = getPlatformLoc(srcImage, matchLoc, tmplImage.rows, tmplImage.cols);
+        Point platformLoc = getPlatformLoc(srcImage, bottleScope);
         //计算距离
-        double distance = getDistance(bottleBottomLoc, platformLoc);
+        double distance = getDistance(bottleLoc, platformLoc);
         //输出显示
-        draw(srcImage, matchLoc, tmplImage.cols, tmplImage.rows, bottleBottomLoc, platformLoc);
+        draw(srcImage, bottleScope, bottleLoc, platformLoc);
         //点击
         char command[200];
         sprintf(command, "adb shell input swipe 540 1600 540 1600 %d", static_cast<int>(distance*1.35));

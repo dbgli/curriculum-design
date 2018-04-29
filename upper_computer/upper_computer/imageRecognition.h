@@ -15,7 +15,7 @@ bool getScreenshot() {
     return 0;
 }
 
-Point getBottleBottomLoc(Mat &srcImage, Mat &tmplImage, Point &matchLoc) {
+Point getBottleLoc(Mat &srcImage, Mat &tmplImage, Rect &bottleScope) {
     //创建结果图像
     int retImageRows = srcImage.rows - tmplImage.rows + 1;
     int retImageCols = srcImage.cols - tmplImage.cols + 1;
@@ -25,14 +25,15 @@ Point getBottleBottomLoc(Mat &srcImage, Mat &tmplImage, Point &matchLoc) {
     normalize(retImage, retImage, 0, 1, NORM_MINMAX, -1, Mat());
     //查找最佳匹配
     double minVal, maxVal;
-    Point minLoc, maxLoc;
+    Point minLoc, maxLoc, matchLoc;
     minMaxLoc(retImage, &minVal, &maxVal, &minLoc, &maxLoc, Mat());
     matchLoc = maxLoc;
-    Point bottleBottomLoc = Point(matchLoc.x + tmplImage.cols / 2, matchLoc.y + tmplImage.rows - 20);
-    return bottleBottomLoc;
+    bottleScope = Rect(matchLoc, tmplImage.size());
+    Point bottleLoc = Point(bottleScope.x + bottleScope.width / 2, bottleScope.y + bottleScope.height - 20);
+    return bottleLoc;
 }
 
-Point getPlatformLoc(Mat dstImage, Point matchLoc, int tmplImageRows, int tmplImageCols) {
+Point getPlatformLoc(Mat dstImage, Rect bottleScope) {
     //转换成灰度图
     cvtColor(dstImage, dstImage, COLOR_BGR2GRAY);
     //均值模糊
@@ -40,12 +41,11 @@ Point getPlatformLoc(Mat dstImage, Point matchLoc, int tmplImageRows, int tmplIm
     //查找边缘
     Canny(dstImage, dstImage, 3, 9, 3);
     //去除瓶子轮廓
-    Mat bottle = dstImage(Rect(matchLoc.x, matchLoc.y, tmplImageCols, tmplImageRows));
-    bottle = { Scalar(0) };
+    dstImage(bottleScope) = { Scalar(0) };
     //返回平台上顶点下50像素处
     Point platformLoc;
     bool flag = 0;
-    for (int i = 400; i != matchLoc.y + tmplImageRows; ++i) {
+    for (int i = 400; i != bottleScope.y + bottleScope.height; ++i) {
         if (flag == 1) break;   //避免多余的判断
         uchar *pRow = dstImage.ptr<uchar>(i);
         for (int j = 0; j != dstImage.cols; ++j) {
@@ -64,10 +64,10 @@ double getDistance(Point bottleBottomLoc, Point platformLoc) {
     return distance;
 }
 
-bool draw(Mat &srcImage, Point matchLoc, int tmplImageCols, int tmplImageRows, Point bottleBottomLoc, Point platformLoc) {
-    rectangle(srcImage, matchLoc, Point(matchLoc.x + tmplImageCols, matchLoc.y + tmplImageRows), Scalar(0, 255, 255), 6, 8, 0);
-    line(srcImage, bottleBottomLoc, platformLoc, Scalar(255, 0, 0), 10, 8);
-    circle(srcImage, bottleBottomLoc, 10, Scalar(0, 0, 255), -1, 8);
+bool draw(Mat &srcImage, Rect bottleScope, Point bottleLoc, Point platformLoc) {
+    rectangle(srcImage, bottleScope, Scalar(0, 255, 255), 6, 8, 0);
+    line(srcImage, bottleLoc, platformLoc, Scalar(255, 0, 0), 10, 8);
+    circle(srcImage, bottleLoc, 10, Scalar(0, 0, 255), -1, 8);
     circle(srcImage, platformLoc, 10, Scalar(0, 0, 255), -1, 8);
     namedWindow("结果", WINDOW_NORMAL);
     resizeWindow("结果", 360, 640);
