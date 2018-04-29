@@ -25,10 +25,10 @@ int main() {
         draw(srcImage, bottleScope, bottleLoc, platformLoc);
         //µã»÷
         char command[200];
-        sprintf(command, "adb shell input swipe 540 1600 540 1600 %d", static_cast<int>(distance*1.35));
+        sprintf_s(command, 200, "adb shell input swipe 540 1600 540 1600 %d", static_cast<int>(distance*1.35));
         cout << command << endl;
         system(command);
-        _sleep(1500);
+        waitKey(1000);
     }
     waitKey();
     return 0;
