@@ -41,7 +41,7 @@ Point getPlatformLoc(Mat dstImage, Rect bottleScope) {
     //查找边缘
     Canny(dstImage, dstImage, 3, 9, 3);
     //去除瓶子轮廓
-    dstImage(bottleScope) = { Scalar(0) };
+    dstImage(bottleScope + Point(-1, -1) + Size(2, 2)) = { Scalar(0) };
     //返回平台上顶点下50像素处
     Point platformLoc;
     bool flag = 0;
