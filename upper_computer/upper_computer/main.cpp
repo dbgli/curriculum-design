@@ -15,14 +15,12 @@ int main() {
         Mat srcImage = imread("D:/课件/单片机/curriculum-design/image/screenshot.png");
         Mat tmplImage = imread("D:/课件/单片机/curriculum-design/bottle.png");
         //查找瓶子
-        Point matchLoc, bottleBottomLoc;
-        findBottle(srcImage, tmplImage, matchLoc, bottleBottomLoc);
+        Point matchLoc;
+        Point bottleBottomLoc = getBottleBottomLoc(srcImage, tmplImage, matchLoc);
         //查找平台
-        Point platformLoc;
-        findPlatform(srcImage, matchLoc, tmplImage.rows, tmplImage.cols, platformLoc);
+        Point platformLoc = getPlatformLoc(srcImage, matchLoc, tmplImage.rows, tmplImage.cols);
         //计算距离
-        double distance;
-        getDistance(bottleBottomLoc, platformLoc, distance);
+        double distance = getDistance(bottleBottomLoc, platformLoc);
         //输出显示
         draw(srcImage, matchLoc, tmplImage.cols, tmplImage.rows, bottleBottomLoc, platformLoc);
         //点击

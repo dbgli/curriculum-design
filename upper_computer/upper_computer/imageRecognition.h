@@ -15,7 +15,7 @@ bool getScreenshot() {
     return 0;
 }
 
-bool findBottle(Mat &srcImage, Mat &tmplImage, Point &matchLoc, Point &bottleBottomLoc) {
+Point getBottleBottomLoc(Mat &srcImage, Mat &tmplImage, Point &matchLoc) {
     //创建结果图像
     int retImageRows = srcImage.rows - tmplImage.rows + 1;
     int retImageCols = srcImage.cols - tmplImage.cols + 1;
@@ -28,11 +28,11 @@ bool findBottle(Mat &srcImage, Mat &tmplImage, Point &matchLoc, Point &bottleBot
     Point minLoc, maxLoc;
     minMaxLoc(retImage, &minVal, &maxVal, &minLoc, &maxLoc, Mat());
     matchLoc = maxLoc;
-    bottleBottomLoc = Point(matchLoc.x + tmplImage.cols / 2, matchLoc.y + tmplImage.rows - 20);
-    return 0;
+    Point bottleBottomLoc = Point(matchLoc.x + tmplImage.cols / 2, matchLoc.y + tmplImage.rows - 20);
+    return bottleBottomLoc;
 }
 
-bool findPlatform(Mat dstImage, Point matchLoc, int tmplImageRows, int tmplImageCols, Point &platformLoc) {
+Point getPlatformLoc(Mat dstImage, Point matchLoc, int tmplImageRows, int tmplImageCols) {
     //转换成灰度图
     cvtColor(dstImage, dstImage, COLOR_BGR2GRAY);
     //均值模糊
@@ -43,6 +43,7 @@ bool findPlatform(Mat dstImage, Point matchLoc, int tmplImageRows, int tmplImage
     Mat bottle = dstImage(Rect(matchLoc.x, matchLoc.y, tmplImageCols, tmplImageRows));
     bottle = { Scalar(0) };
     //返回平台上顶点下50像素处
+    Point platformLoc;
     bool flag = 0;
     for (int i = 400; i != matchLoc.y + tmplImageRows; ++i) {
         if (flag == 1) break;   //避免多余的判断
@@ -55,12 +56,12 @@ bool findPlatform(Mat dstImage, Point matchLoc, int tmplImageRows, int tmplImage
             }
         }
     }
-    return 0;
+    return platformLoc;
 }
 
-bool getDistance(Point bottleBottomLoc, Point platformLoc, double &distance) {
-    distance = sqrt(pow(bottleBottomLoc.x - platformLoc.x, 2) + pow(bottleBottomLoc.y - platformLoc.y, 2));
-    return 0;
+double getDistance(Point bottleBottomLoc, Point platformLoc) {
+    double distance = sqrt(pow(bottleBottomLoc.x - platformLoc.x, 2) + pow(bottleBottomLoc.y - platformLoc.y, 2));
+    return distance;
 }
 
 bool draw(Mat &srcImage, Point matchLoc, int tmplImageCols, int tmplImageRows, Point bottleBottomLoc, Point platformLoc) {
