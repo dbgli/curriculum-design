@@ -18,6 +18,8 @@ int main() {
         //获取截图
         getScreenshot();
         cout << "第 " << ++n << " 次" << endl;
+        //计时开始
+        double timer = static_cast<double>(getTickCount());
         //读取图像
         Mat srcImage = imread("D:/课件/单片机/curriculum-design/image/screenshot.png");
         Mat tmplImage = imread("D:/课件/单片机/curriculum-design/bottle.png");
@@ -32,10 +34,13 @@ int main() {
         draw(srcImage, bottleScope, bottleLoc, platformLoc);
         //计算距离
         double distance = getDistance(bottleLoc, platformLoc);
-        cout << "    距离：" << distance << " px" << endl;
+        cout << "    距离：" << static_cast<int>(distance) << " px" << endl;
         //计算时间
         int time = distance2time(distance);
         cout << "按压时间：" << time << " ms" << endl;
+        //计时结束
+        timer = (static_cast<double>(getTickCount()) - timer) / getTickFrequency();
+        cout << "    耗时：" << static_cast<int>(timer * 1000) << " ms" << endl;
         //长按
         longPress(time);
         waitKey(1000);
