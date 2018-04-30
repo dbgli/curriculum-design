@@ -4,7 +4,7 @@
 using namespace std;
 using namespace cv;
 
-#define random(a, b) (rand() % (b - a))   //取得(a,b)的随机整数
+#define random(a, b) (rand() % (b - a + 1) + a)   //取得[a,b]的随机整数
 
 double getDistance(Point bottleLoc, Point platformLoc) {
     double distance = sqrt(pow(bottleLoc.x - platformLoc.x, 2) + pow(bottleLoc.y - platformLoc.y, 2));
